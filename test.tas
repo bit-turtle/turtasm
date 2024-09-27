@@ -1,0 +1,17 @@
+# Test TurtASM File
+
+b bob d10
+
+f main
+	$bob -> r1
+	r0 -> r1
+	r0 -> [$bob]
+	r0 -> [r1]
+	[$bob] -> r0
+	[r1] -> r0
+	r0 + r1 -> r2
+	d1 -> r1
+	r1 + r1 -> r2
+	r0 !
+	-> r0
+	<- r0
