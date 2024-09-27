@@ -1,5 +1,6 @@
 # TurtASM Compiler
-TurtASM is a cross platform compiler that tries to be compatible with every type of computer ever through a simple system to add architectures. It is similar to assembly (That's why it is called *'...ASM'*)
+TurtASM is a cross platform compiler that tries to be compatible with every type of computer ever through a simple system to add architectures. It is similar to assembly (That's why it is called *'...ASM'*)  
+Check `SYNTAX.md` for information on the syntax
 
 ## How It Works
 1. The TurtASM Compiler `turtasm` compiles the source code to a IR Representation in XML
