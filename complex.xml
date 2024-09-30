@@ -20,7 +20,7 @@
 		<source type="register">1</source>
 	</instruction>
 	<instruction type="jump">
-		<source type="">0</source>
+		<source type="value">0</source>
 	</instruction>
 	<instruction type="pop">
 		<destination type="register">0</destination>
@@ -49,84 +49,84 @@
 		<destination type="register">0</destination>
 	</instruction>
 	<instruction type="call">
-		<source type="">0</source>
+		<source type="value">0</source>
 	</instruction>
 	<instruction type="copy">
 		<source type="value">101</source>
 		<destination type="register">0</destination>
 	</instruction>
 	<instruction type="call">
-		<source type="">0</source>
+		<source type="value">0</source>
 	</instruction>
 	<instruction type="copy">
 		<source type="value">108</source>
 		<destination type="register">0</destination>
 	</instruction>
 	<instruction type="call">
-		<source type="">0</source>
+		<source type="value">0</source>
 	</instruction>
 	<instruction type="copy">
 		<source type="value">108</source>
 		<destination type="register">0</destination>
 	</instruction>
 	<instruction type="call">
-		<source type="">0</source>
+		<source type="value">0</source>
 	</instruction>
 	<instruction type="copy">
 		<source type="value">111</source>
 		<destination type="register">0</destination>
 	</instruction>
 	<instruction type="call">
-		<source type="">0</source>
+		<source type="value">0</source>
 	</instruction>
 	<instruction type="copy">
 		<source type="value">32</source>
 		<destination type="register">0</destination>
 	</instruction>
 	<instruction type="call">
-		<source type="">0</source>
+		<source type="value">0</source>
 	</instruction>
 	<instruction type="copy">
 		<source type="value">87</source>
 		<destination type="register">0</destination>
 	</instruction>
 	<instruction type="call">
-		<source type="">0</source>
+		<source type="value">0</source>
 	</instruction>
 	<instruction type="copy">
 		<source type="value">111</source>
 		<destination type="register">0</destination>
 	</instruction>
 	<instruction type="call">
-		<source type="">0</source>
+		<source type="value">0</source>
 	</instruction>
 	<instruction type="copy">
 		<source type="value">114</source>
 		<destination type="register">0</destination>
 	</instruction>
 	<instruction type="call">
-		<source type="">0</source>
+		<source type="value">0</source>
 	</instruction>
 	<instruction type="copy">
 		<source type="value">108</source>
 		<destination type="register">0</destination>
 	</instruction>
 	<instruction type="call">
-		<source type="">0</source>
+		<source type="value">0</source>
 	</instruction>
 	<instruction type="copy">
 		<source type="value">100</source>
 		<destination type="register">0</destination>
 	</instruction>
 	<instruction type="call">
-		<source type="">0</source>
+		<source type="value">0</source>
 	</instruction>
 	<instruction type="copy">
 		<source type="value">33</source>
 		<destination type="register">0</destination>
 	</instruction>
 	<instruction type="call">
-		<source type="">0</source>
+		<source type="value">0</source>
 	</instruction>
 	<instruction type="return"/>
 </program>

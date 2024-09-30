@@ -136,6 +136,23 @@ class Arch {
 		virtual string condition_not_overflow() {
 			return "";
 		}
+		// Control Flow
+		virtual string jump_value(int val) {
+			return "";
+		}
+		virtual string jump_register(int reg) {
+			return "";
+		}
+		virtual string call_value(int val) {
+			return "";
+		}
+		virtual string call_register(int reg) {
+			return "";
+		}
+		virtual string call_return() {
+			return "";
+		}
+		
 };
 // End Arch
 #endif

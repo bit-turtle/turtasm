@@ -39,6 +39,9 @@ enum inst {
 	CONDITION_NOT_ZERO,
 	CONDITION_IF_OVERFLOW,
 	CONDITION_NOT_OVERFLOW,
+	JUMP,
+	CALL,
+	RETURN,
 };
 
 inst getinst(std::string str) {
@@ -59,6 +62,9 @@ inst getinst(std::string str) {
 	if (str == "condition_not_zero") return CONDITION_NOT_ZERO;
 	if (str == "condition_if_overflow") return CONDITION_IF_OVERFLOW;
 	if (str == "condition_not_overflow") return CONDITION_NOT_OVERFLOW;
+	if (str == "jump") return JUMP;
+	if (str == "call") return CALL;
+	if (str == "return") return RETURN;
 	// Else Inst Not Implemented
 	std::cout << "Unknown Instruction: " << str << std::endl;
 	std::exit(EXIT_FAILURE);
@@ -134,11 +140,9 @@ int main(int, char* argv[]) {
 	rapidxml::xml_node<>* main = program->first_node("main");
 	if (main) mainloc = std::stoi(main->value());
 	std::string mainstr = arch->main(mainloc);
-	if (mainstr != "") {
-		output << arch->prefix();
-		output << mainstr;
-		output << arch->postfix();
-	}
+	output << arch->prefix();
+	output << mainstr;
+	output << arch->postfix();
 
 	int instid = 0;
 	for (rapidxml::xml_node<>* instruction = program->first_node("instruction"); instruction; instruction = instruction->next_sibling("instruction") ) {
@@ -274,9 +278,21 @@ int main(int, char* argv[]) {
 			case CONDITION_NOT_OVERFLOW:
 				istr = arch->condition_not_overflow();
 				break;
+			// Control Flow
+			case JUMP:
+				if (s1t == REGISTER) arch->jump_register(s1);
+				if (s1t == VALUE) arch->jump_value(s1);
+				break;
+			case CALL:
+				if (s1t == REGISTER) arch->call_register(s1);
+				if (s1t == VALUE) arch->call_value(s1);
+				break;
+			case RETURN:
+				arch->call_return();
+				break;
 		}
 		if (istr == "") {
-			std::cout << "Unsupported Instruction Or Instruction Combination: <instruction> #" << instid << std::endl;
+			std::cout << "Unsupported Instruction Or Instruction Combination In Arch: <instruction #" << instid << "> type='" << instruction->first_attribute("type")->value() << "'" << std::endl;
 			std::exit(EXIT_FAILURE);
 		}
 		// Add Instruction

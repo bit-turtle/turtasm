@@ -65,6 +65,16 @@ int main() {
 		ret << "goto i" << inst << ";";
 		return ret.str();
 	}
+	// Control Flow
+	string jump_value(int val) {
+		stringstream ret;
+		ret << "goto i" << val << ";";
+		return ret.str();
+	}
+	// Register Jump Not Supported
+	// Value Call Not Supported
+	// Register Call Not Supported
+	// Call Return Not Supported
 	// Data Copy Instructions
 	string copy_register_register(int reg1, int reg2) {
 		stringstream ret;

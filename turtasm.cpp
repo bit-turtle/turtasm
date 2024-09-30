@@ -462,11 +462,8 @@ int main(int, char* argv[]) {
 				std::stringstream locss;
 				locss << dataloc.location;
 				std::string loc(locss.str());
-				char* type_name;
-				if (location.type == VALUE) type_name = type_value;
-				if (location.type == REGISTER) type_name = type_register;
 				rapidxml::xml_node<>* source = objectxml.allocate_node(rapidxml::node_type::node_element, xml_source, objectxml.allocate_string(loc.c_str()));
-				source->append_attribute(objectxml.allocate_attribute(attr_type, type_name));
+				source->append_attribute(objectxml.allocate_attribute(attr_type, type_value));
 				instruction->append_node(source);
 			}
 			else {
@@ -547,11 +544,8 @@ int main(int, char* argv[]) {
 				std::stringstream locss;
 				locss << dataloc.location;
 				std::string loc(locss.str());
-				char* type_name;
-				if (location.type == VALUE) type_name = type_value;
-				if (location.type == REGISTER) type_name = type_register;
 				rapidxml::xml_node<>* source = objectxml.allocate_node(rapidxml::node_type::node_element, xml_source, objectxml.allocate_string(loc.c_str()));
-				source->append_attribute(objectxml.allocate_attribute(attr_type, type_name));
+				source->append_attribute(objectxml.allocate_attribute(attr_type, type_value));
 				instruction->append_node(source);
 			}
 			else {
