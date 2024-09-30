@@ -2,12 +2,12 @@
 // Add New Architectures Here
 #include "arch.hpp"
 // Include Architecture Classes
-// Example: #include "minecraft.hpp"
+#include "example.hpp"
 
 // Architecture Getting Function
 Arch* getarch(std::string name) {
 	// If Name Return New Arch
-	// Example: if (name == "minecraft") return new Minecraft();
+	if (name == "example") return new ExampleArch();
 	// Otherwise Return Empty A Null Pointer
 	return nullptr;
 }

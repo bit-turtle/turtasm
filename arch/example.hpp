@@ -11,4 +11,4 @@ class ExampleArch : public Arch {
 	string finalize() {
 		return "arch";
 	}
-}
+};

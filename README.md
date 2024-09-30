@@ -7,8 +7,8 @@ Check `SYNTAX.md` for information on the syntax
 2. The TurtASM Linker `turtlink` links the IR Representation into a format that can run on the target architecture
 
 ### Using The Commands
-* TurtASM Compiler: `turtasm [inputfiles...] -o outputfile`
-* TurtASM Linker: `turtlink inputfile --arch architecturename -o outputfile`
+* TurtASM Compiler: `turtasm [inputfiles...] --output=outputfile` (Default Output File: `turtobj.xml`)
+* TurtASM Linker: `turtlink inputfile --arch=archname --output=outputfile` (Default Output File: `turtexe.out`)
 
 #### Adding An Architecture
 Architectures in turtasm are classes that derive from the `Arch` class. To add a new architecture open `arch/def.hpp` and either include a file with your architecture class in it or define the class right in `def.hpp`. After including your class definition add an `if` statement in the function `Arch* getarch(std::string)` that returns `new YourArch()` when the name matches. There are examples for this in comments in `arch/def.hpp`. For an example architecture class look at `arch/examplearch.hpp`. Architecture classes work by overriding the `virtual` fucntions in the `Arch` class.  
