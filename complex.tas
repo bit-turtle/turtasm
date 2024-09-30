@@ -1,0 +1,51 @@
+# Complex Source File
+# Made for arch=cxx (C++ Arch)
+
+b helloworld d16	# Reserve 16 Bytes for "Hello World"
+
+f print	# Print Function
+	<- r1	# Backup r1
+	s print_loop	# Print Loop Subroutine
+	[r0] -> r1	# Get From Ram
+	r1 -> p0	# Print Char
+	r0 + d1 -> r0	# Increment r0
+	? !0 r1	# Is r1 not equal to zero
+		>> $print_loop	# If so then do it again
+	# Done
+	-> r0	# Restore r0
+	-> r1	# Restore r1
+
+<	# Return
+
+f write	# Function to write to ram
+	r0 -> [r1]	# Write Value
+	r1 + d1 -> r1	# Increment Pointer
+<
+
+f main	# Main Function
+	$helloworld -> r0	# Load r0 with $helloworld address
+	cH -> r0	# H
+	> $write
+	ce -> r0	# e
+	> $write
+	cl -> r0	# l
+	> $write
+	cl -> r0	# l
+	> $write
+	co -> r0	# o
+	> $write
+	x20 -> r0	# [Space]
+	> $write
+	cW -> r0	# W
+	> $write
+	co -> r0	# o
+	> $write
+	cr -> r0	# r
+	> $write
+	cl -> r0	# l
+	> $write
+	cd -> r0	# d
+	> $write
+	c! -> r0	# !
+	> $write
+<

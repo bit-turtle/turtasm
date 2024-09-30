@@ -1,0 +1,18 @@
+#include <iostream>
+int register[256];
+int memory[2048];
+void output(int port, int data) {
+if (port == 0) {
+std::cout << (char)data;
+}
+}
+int input(int port) {
+int ret;
+std::cin >> ret;
+return ret;
+}
+int main() {
+i1:
+	register[1] = register[0];
+return 0;
+}

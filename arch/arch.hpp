@@ -4,14 +4,27 @@
 #define ARCH
 // Begin Arch
 #include <string>
+#include <sstream>
 using std::string;
+// Arch Class
 class Arch {
 	public:
+		// Instruction Variable
+		int instruction = 0;
 		// Initializer and Finalizer Functions
 		virtual string initialize() {
 			return "";
 		}
 		virtual string finalize() {
+			return "";
+		}
+		virtual string prefix() {
+			return "";
+		}
+		virtual string postfix() {
+			return "";
+		}
+		virtual string main(int inst) {
 			return "";
 		}
 		// Instruction Functions
@@ -46,6 +59,12 @@ class Arch {
 			return "";
 		}
 		virtual string pop_register(int reg) {
+			return "";
+		}
+		virtual string empty_push() {
+			return "";
+		}
+		virtual string empty_pop() {
 			return "";
 		}
 		// ALU Math and Logic Instructions
@@ -102,6 +121,19 @@ class Arch {
 			return "";
 		}
 		virtual string leftshift_register(int reg) {
+			return "";
+		}
+		// Conditional Operations
+		virtual string condition_if_zero(int reg) {
+			return "";
+		}
+		virtual string condition_not_zero(int reg) {
+			return "";
+		}
+		virtual string condition_if_overflow() {
+			return "";
+		}
+		virtual string condition_not_overflow() {
 			return "";
 		}
 };

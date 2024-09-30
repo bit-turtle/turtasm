@@ -25,6 +25,8 @@ enum inst {
 	COPY,
 	PUSH,
 	POP,
+	EMPTY_PUSH,
+	EMPTY_POP,
 	ADD,
 	SUBTRACT,
 	XOR,
@@ -33,12 +35,18 @@ enum inst {
 	NOT,
 	RIGHTSHIFT,
 	LEFTSHIFT,
+	CONDITION_IF_ZERO,
+	CONDITION_NOT_ZERO,
+	CONDITION_IF_OVERFLOW,
+	CONDITION_NOT_OVERFLOW,
 };
 
 inst getinst(std::string str) {
 	if (str == "copy") return COPY;
 	if (str == "push") return PUSH;
 	if (str == "pop") return POP;
+	if (str == "empty_push") return EMPTY_PUSH;
+	if (str == "empty_pop") return EMPTY_POP;
 	if (str == "add") return ADD;
 	if (str == "subtract") return SUBTRACT;
 	if (str == "xor") return XOR;
@@ -47,6 +55,11 @@ inst getinst(std::string str) {
 	if (str == "not") return NOT;
 	if (str == "rightshift") return RIGHTSHIFT;
 	if (str == "leftshift") return LEFTSHIFT;
+	if (str == "condition_if_zero") return CONDITION_IF_ZERO;
+	if (str == "condition_not_zero") return CONDITION_NOT_ZERO;
+	if (str == "condition_if_overflow") return CONDITION_IF_OVERFLOW;
+	if (str == "condition_not_overflow") return CONDITION_NOT_OVERFLOW;
+	// Else Inst Not Implemented
 	std::cout << "Unknown Instruction: " << str << std::endl;
 	std::exit(EXIT_FAILURE);
 }
@@ -117,8 +130,18 @@ int main(int, char* argv[]) {
 
 	rapidxml::xml_node<>* program = object.first_node("program");
 
-	long instid = 0;
-	for (rapidxml::xml_node<>* instruction = program->first_node("instruction"); instruction; instruction = instruction->next_sibling() ) {
+	int mainloc = 0;
+	rapidxml::xml_node<>* main = program->first_node("main");
+	if (main) mainloc = std::stoi(main->value());
+	std::string mainstr = arch->main(mainloc);
+	if (mainstr != "") {
+		output << arch->prefix();
+		output << mainstr;
+		output << arch->postfix();
+	}
+
+	int instid = 0;
+	for (rapidxml::xml_node<>* instruction = program->first_node("instruction"); instruction; instruction = instruction->next_sibling("instruction") ) {
 		// Keep Track Of Instuction ID For Errors
 		instid ++;
 		//
@@ -134,7 +157,8 @@ int main(int, char* argv[]) {
 		for (rapidxml::xml_node<>* node = instruction->first_node(); node; node = node->next_sibling()) {
 			type t = gettype(node->first_attribute("type")->value());
 			int v = getval(std::string(node->value()));
-			if (node->name() == "source") {
+			std::string name = node->name();
+			if (name == "source") {
 				if (sid == 1) {
 					s1 = v;
 					s1t = t;
@@ -145,14 +169,14 @@ int main(int, char* argv[]) {
 				}
 				sid++;
 			}
-			else if (node->name() == "destination") {
+			else if (name == "destination") {
 				d = v;
 				dt = t;
 			}
 			else {
-				std::cout << "Found Tag Other Than <source> and <destination> !!" << std::endl;
-				return EXIT_FAILURE;
-			}
+				std::cout << "Invalid Node Inside <instruction " << instid << ">: <" << node->name() << ">" << std::endl;
+				std::exit(EXIT_FAILURE);
+			};
 		}
 		// Get Instruction
 		std::string istr;	// Arch Output String
@@ -196,6 +220,12 @@ int main(int, char* argv[]) {
 			case POP:
 				istr = arch->pop_register(d);
 				break;
+			case EMPTY_PUSH:
+				istr = arch->empty_push();
+				break;
+			case EMPTY_POP:
+				istr = arch->empty_pop();
+				break;
 			// ALU Math Instructions
 			case ADD:
 				if (s1t == REGISTER && s2t == REGISTER) istr = arch->add_register_register(s1,s2,d);
@@ -231,12 +261,29 @@ int main(int, char* argv[]) {
 			case LEFTSHIFT:
 				if (s1t == REGISTER) istr = arch->leftshift_register(s1);
 				break;
+			// Conditions
+			case CONDITION_IF_ZERO:
+				if (s1t == REGISTER) istr = arch->condition_if_zero(s1);
+				break;
+			case CONDITION_NOT_ZERO:
+				if (s1t == REGISTER) istr = arch->condition_not_zero(s1);
+				break;
+			case CONDITION_IF_OVERFLOW:
+				istr = arch->condition_if_overflow();
+				break;
+			case CONDITION_NOT_OVERFLOW:
+				istr = arch->condition_not_overflow();
+				break;
 		}
 		if (istr == "") {
 			std::cout << "Unsupported Instruction Or Instruction Combination: <instruction> #" << instid << std::endl;
 			std::exit(EXIT_FAILURE);
 		}
+		// Add Instruction
+		arch->instruction = instid;
+		output << arch->prefix();
 		output << istr;
+		output << arch->postfix();
 	}
 
 	// Finalize Architecture

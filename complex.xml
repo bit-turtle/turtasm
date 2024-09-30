@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<program version="1.0" type="turtasm-object">
+	<instruction type="push">
+		<source type="register">1</source>
+	</instruction>
+	<instruction type="copy">
+		<source type="pointer">0</source>
+		<destination type="register">1</destination>
+	</instruction>
+	<instruction type="copy">
+		<source type="register">1</source>
+		<destination type="port">0</destination>
+	</instruction>
+	<instruction type="add">
+		<source type="register">0</source>
+		<source type="value">1</source>
+		<destination type="register">0</destination>
+	</instruction>
+	<instruction type="condition_not_zero">
+		<source type="register">1</source>
+	</instruction>
+	<instruction type="jump">
+		<source type="">0</source>
+	</instruction>
+	<instruction type="pop">
+		<destination type="register">0</destination>
+	</instruction>
+	<instruction type="pop">
+		<destination type="register">1</destination>
+	</instruction>
+	<instruction type="return"/>
+	<instruction type="copy">
+		<source type="register">0</source>
+		<destination type="pointer">1</destination>
+	</instruction>
+	<instruction type="add">
+		<source type="register">1</source>
+		<source type="value">1</source>
+		<destination type="register">1</destination>
+	</instruction>
+	<instruction type="return"/>
+	<main>0</main>
+	<instruction type="copy">
+		<source type="value">0</source>
+		<destination type="register">0</destination>
+	</instruction>
+	<instruction type="copy">
+		<source type="value">72</source>
+		<destination type="register">0</destination>
+	</instruction>
+	<instruction type="call">
+		<source type="">0</source>
+	</instruction>
+	<instruction type="copy">
+		<source type="value">101</source>
+		<destination type="register">0</destination>
+	</instruction>
+	<instruction type="call">
+		<source type="">0</source>
+	</instruction>
+	<instruction type="copy">
+		<source type="value">108</source>
+		<destination type="register">0</destination>
+	</instruction>
+	<instruction type="call">
+		<source type="">0</source>
+	</instruction>
+	<instruction type="copy">
+		<source type="value">108</source>
+		<destination type="register">0</destination>
+	</instruction>
+	<instruction type="call">
+		<source type="">0</source>
+	</instruction>
+	<instruction type="copy">
+		<source type="value">111</source>
+		<destination type="register">0</destination>
+	</instruction>
+	<instruction type="call">
+		<source type="">0</source>
+	</instruction>
+	<instruction type="copy">
+		<source type="value">32</source>
+		<destination type="register">0</destination>
+	</instruction>
+	<instruction type="call">
+		<source type="">0</source>
+	</instruction>
+	<instruction type="copy">
+		<source type="value">87</source>
+		<destination type="register">0</destination>
+	</instruction>
+	<instruction type="call">
+		<source type="">0</source>
+	</instruction>
+	<instruction type="copy">
+		<source type="value">111</source>
+		<destination type="register">0</destination>
+	</instruction>
+	<instruction type="call">
+		<source type="">0</source>
+	</instruction>
+	<instruction type="copy">
+		<source type="value">114</source>
+		<destination type="register">0</destination>
+	</instruction>
+	<instruction type="call">
+		<source type="">0</source>
+	</instruction>
+	<instruction type="copy">
+		<source type="value">108</source>
+		<destination type="register">0</destination>
+	</instruction>
+	<instruction type="call">
+		<source type="">0</source>
+	</instruction>
+	<instruction type="copy">
+		<source type="value">100</source>
+		<destination type="register">0</destination>
+	</instruction>
+	<instruction type="call">
+		<source type="">0</source>
+	</instruction>
+	<instruction type="copy">
+		<source type="value">33</source>
+		<destination type="register">0</destination>
+	</instruction>
+	<instruction type="call">
+		<source type="">0</source>
+	</instruction>
+	<instruction type="return"/>
+</program>
+

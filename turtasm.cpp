@@ -19,7 +19,7 @@ struct macro {
 
 void error(std::string error, macro location, std::string errorline, std::string description) {
 	std::cout << "[" << error << "] " << description << std::endl;
-	std::cout << location.name << ":" << location.location << " -> " << errorline << std::endl;
+	std::cout << location.name << ":" << location.location << " -> '" << errorline << "'" << std::endl;
 }
 
 enum types {
@@ -198,6 +198,7 @@ int main(int, char* argv[]) {
 	char* xml_empty = objectxml.allocate_string("");
 	char* xml_data = objectxml.allocate_string("data");
 	char* xml_instruction = objectxml.allocate_string("instruction");
+	char* xml_main = objectxml.allocate_string("main");
 	char* xml_source = objectxml.allocate_string("source");
 	char* xml_destination = objectxml.allocate_string("destination");
 	char* attr_type = objectxml.allocate_string("type");
@@ -217,6 +218,8 @@ int main(int, char* argv[]) {
 	// Stack Instructions
 	char* type_push = objectxml.allocate_string("push");
 	char* type_pop = objectxml.allocate_string("pop");
+	char* type_empty_push = objectxml.allocate_string("empty_push");
+	char* type_empty_pop = objectxml.allocate_string("empty_pop");
 	// Conditional Instruction Types
 	char* type_condition_if_zero = objectxml.allocate_string("condition_if_zero");
 	char* type_condition_not_zero = objectxml.allocate_string("condition_not_zero");
@@ -252,7 +255,14 @@ int main(int, char* argv[]) {
 			function.name = name;
 			function.location = instruction;
 			functions.push_back(function);
-			if (!line.rdbuf()->in_avail() == 0) {
+			std::stringstream instss;
+			instss << instruction;
+			std::string inst = instss.str();
+			if (name == "main") {	// Main Function Pointer
+				output->append_node(objectxml.allocate_node(rapidxml::node_type::node_element, xml_main, objectxml.allocate_string(inst.c_str())));
+				
+			}
+			if (line.rdbuf()->in_avail() != 0) {
 				errorcompile = true;
 				error("JunkError", fileloc[i], line.str(), "Junk Characters After Function Declaration (Forgot To Comment?)");
 				break;
@@ -291,7 +301,7 @@ int main(int, char* argv[]) {
 				}
 				datasize += sizeval.value;
 			}
-			if (!line.rdbuf()->in_avail() == 0) {
+			if (line.rdbuf()->in_avail() != 0) {
 				errorcompile = true;
 				error("JunkError", fileloc[i], line.str(), "Junk Characters After Reserved Byte Declaration (Forgot To Comment?)");
 				break;
@@ -303,7 +313,7 @@ int main(int, char* argv[]) {
 			rapidxml::xml_node<>* instruction = objectxml.allocate_node(rapidxml::node_type::node_element, xml_instruction, xml_empty);
 			instruction->append_attribute(objectxml.allocate_attribute(attr_type, type_return));
 			output->append_node(instruction);
-			if (line.rdbuf()->in_avail() == 0) {
+			if (line.rdbuf()->in_avail() != 0) {
 				errorcompile = true;
 				error("JunkError", fileloc[i], line.str(), "Junk Characters After Return Statement (Forgot To Comment?)");
 				break;
@@ -312,9 +322,11 @@ int main(int, char* argv[]) {
 		}
 		if (operation == "<-") {	// Stack Push Operation
 			if (line.rdbuf()->in_avail() == 0) {
-				errorcompile = true;
-				error("SyntaxError", fileloc[i], line.str(), "No Register Specified For Push Operation");
-				break;
+				// Empty Push (Shift Location In Stack Forwards)
+				rapidxml::xml_node<>* instruction = objectxml.allocate_node(rapidxml::node_type::node_element, xml_instruction, xml_empty);
+				instruction->append_attribute(objectxml.allocate_attribute(attr_type, type_empty_push));
+				output->append_node(instruction);
+				continue;
 			}
 			std::string regstr;
 			line >> regstr;
@@ -329,7 +341,7 @@ int main(int, char* argv[]) {
 				error("TypeError", fileloc[i], line.str(), "Value Type Is Not A Register");
 				break;
 			}
-			if (!line.rdbuf()->in_avail() == 0) {
+			if (line.rdbuf()->in_avail() != 0) {
 				errorcompile = true;
 				error("JunkError", fileloc[i], line.str(), "Junk Characters After Stack Push Source (Forgot To Comment?)");
 				break;
@@ -349,9 +361,11 @@ int main(int, char* argv[]) {
 		}
 		if (operation == "->") {	// Stack Pop Operation
 			if (line.rdbuf()->in_avail() == 0) {
-				errorcompile = true;
-				error("SyntaxError", fileloc[i], line.str(), "No Register Specified For Pop Operation");
-				break;
+				// Empty Pop (Shift Location In Stack Backwards)
+				rapidxml::xml_node<>* instruction = objectxml.allocate_node(rapidxml::node_type::node_element, xml_instruction, xml_empty);
+				instruction->append_attribute(objectxml.allocate_attribute(attr_type, type_empty_pop));
+				output->append_node(instruction);
+				continue;
 			}
 			std::string regstr;
 			line >> regstr;
@@ -366,7 +380,7 @@ int main(int, char* argv[]) {
 				error("TypeError", fileloc[i], line.str(), "Value Type Is Not A Register");
 				break;
 			}
-			if (!line.rdbuf()->in_avail() == 0) {
+			if (line.rdbuf()->in_avail() != 0) {
 				errorcompile = true;
 				error("JunkError", fileloc[i], line.str(), "Junk Characters After Stack Push Destination (Forgot To Comment?)");
 				break;
@@ -433,9 +447,9 @@ int main(int, char* argv[]) {
 			if (location.type == DATA) {
 				macro dataloc;
 				bool found = false;
-				for (unsigned int d = 0; d < data.size(); d++) {
+				for (unsigned int d = 0; d < functions.size(); d++) {
 					if (functions[d].name == location.data) {
-						dataloc = data[d];
+						dataloc = functions[d];
 						found = true;
 						break;
 					}
@@ -518,9 +532,9 @@ int main(int, char* argv[]) {
 			if (location.type == DATA) {
 				macro dataloc;
 				bool found = false;
-				for (unsigned int d = 0; d < data.size(); d++) {
+				for (unsigned int d = 0; d < functions.size(); d++) {
 					if (functions[d].name == location.data) {
-						dataloc = data[d];
+						dataloc = functions[d];
 						found = true;
 						break;
 					}
