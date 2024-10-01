@@ -234,11 +234,11 @@ int main(int, char* argv[]) {
 	char* type_input = objectxml.allocate_string("input");
 	char* type_output = objectxml.allocate_string("output");
 	// Compile Variables
-	unsigned int instruction = 0;
 	std::vector<macro> functions;
 	std::vector<macro> data;
 	unsigned int datasize = 0;
 	bool errorcompile = false;
+	unsigned int instid = 0;
 	for (int i = 0; i < file.size(); i++) {
 		std::stringstream line(file[i]);
 		std::string operation;
@@ -253,14 +253,13 @@ int main(int, char* argv[]) {
 			line >> name;
 			macro function;
 			function.name = name;
-			function.location = instruction;
+			function.location = instid;
 			functions.push_back(function);
 			std::stringstream instss;
-			instss << instruction;
+			instss << instid;
 			std::string inst = instss.str();
 			if (name == "main") {	// Main Function Pointer
 				output->append_node(objectxml.allocate_node(rapidxml::node_type::node_element, xml_main, objectxml.allocate_string(inst.c_str())));
-				
 			}
 			if (line.rdbuf()->in_avail() != 0) {
 				errorcompile = true;
@@ -269,6 +268,7 @@ int main(int, char* argv[]) {
 			}
 			continue;
 		}
+		else instid++;	// Only non macro instructions
 		if (operation == "b") {	// Data Macro reserve 'b'yte
 			if (line.rdbuf()->in_avail() == 0) {
 				errorcompile = true;

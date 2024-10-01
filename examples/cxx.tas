@@ -1,0 +1,19 @@
+# File to show support of CxxArch
+# CxxArch Supports EVerything Except "call"/"call_return" commands (">" and "<". ">>" is supported)
+f main
+# Stack End Marker
+	d0 -> r0
+	<- r0
+# OK! (Passed in backwards on stack)
+	c! -> r0
+	<- r0
+	cK -> r0
+	<- r0
+	cO -> r0
+	<- r0
+s loop	# Print Loop
+	-> r2
+	r2 -> p0
+	? !0 r2
+		>> $loop
+# End of program ("<" is not supported in CxxArch)

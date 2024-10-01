@@ -7,21 +7,23 @@ using std::stringstream;
 class CxxArch : public Arch {
 	string initialize() {
 		return R"(#include <iostream>
-int register[256];
+int reg[256];
 int memory[2048];
 int stack[1024];
-int* stackptr = &stack[0];
+int top = 0;
 void push(int val) {
-	*stackptr++ = val;
+	stack[top] = val;
+	top++;
 }
 void epush() {
-	stackptr++;
+	top++;
 }
 int pop() {
-	return *--stackptr;
+	top--;
+	return stack[top];
 }
 void epop() {
-	stackptr--;
+	top--;
 }
 // Port 0: ASCII
 // Port 1: Number
@@ -76,50 +78,55 @@ int main() {
 	// Register Call Not Supported
 	// Call Return Not Supported
 	// Data Copy Instructions
-	string copy_register_register(int reg1, int reg2) {
+	string copy_value_register(int val, int reg) {
 		stringstream ret;
-		ret << "register[" << reg2 << "] = register[" << reg1 << "];";
+		ret << "reg[" << reg << "] = " << val << ";";
+		return ret.str();
+	}
+	string copy_reg_register(int reg1, int reg2) {
+		stringstream ret;
+		ret << "reg[" << reg2 << "] = reg[" << reg1 << "];";
 		return ret.str();
 	}
 	string copy_register_memory(int reg, int mem) {
 		stringstream ret;
-		ret << "memory[" << reg << "] = register[" << reg << "];";
+		ret << "memory[" << reg << "] = reg[" << reg << "];";
 		return ret.str();
 	}
 	string copy_register_pointer(int reg, int ptr) {
 		stringstream ret;
-		ret << "memory[register[" << ptr << "]] = register[" << reg << "];";
+		ret << "memory[reg[" << ptr << "]] = reg[" << reg << "];";
 		return ret.str();
 	}
 	string copy_register_port(int reg, int port) {
 		stringstream ret;
-		ret << "output(" << port << ", register[" << reg << "]);";
+		ret << "output(" << port << ", reg[" << reg << "]);";
 		return ret.str();
 	}
 	string copy_memory_register(int mem, int reg) {
 		stringstream ret;
-		ret << "register[" << reg << "] = memory[" << mem << "];";
+		ret << "reg[" << reg << "] = memory[" << mem << "];";
 		return ret.str();
 	}
 	string copy_pointer_register(int ptr, int reg) {
 		stringstream ret;
-		ret << "register[" << reg << "] = memory[register[" << ptr << "]];";
+		ret << "reg[" << reg << "] = memory[reg[" << ptr << "]];";
 		return ret.str();
 	}
 	string copy_port_register(int port, int reg) {
 		stringstream ret;
-		ret << "register[" << reg << "] = input(" << port << ");";
+		ret << "reg[" << reg << "] = input(" << port << ");";
 		return ret.str();
 	}
 	// Stack Instructions
 	string push_register(int reg) {
 		stringstream ret;
-		ret << "push(register[" << reg << "]);";
+		ret << "push(reg[" << reg << "]);";
 		return ret.str();
 	}
 	string pop_register(int reg) {
 		stringstream ret;
-		ret << "register[" << reg << "] = pop();";
+		ret << "reg[" << reg << "] = pop();";
 		return ret.str();
 	}
 	string empty_push() {
@@ -131,12 +138,12 @@ int main() {
 	// Conditional Instructions
 	string condition_if_zero(int reg) {
 		stringstream ret;
-		ret << "if (register[" << reg << "] == 0)";
+		ret << "if (reg[" << reg << "] == 0)";
 		return ret.str();
 	}
 	string condition_not_zero(int reg) {
 		stringstream ret;
-		ret << "if (register[" << reg << "] != 0)";
+		ret << "if (reg[" << reg << "] != 0)";
 		return ret.str();
 	}
 	// Overflow Not Supported
@@ -144,97 +151,97 @@ int main() {
 	// Add
 	string add_register_register(int reg1, int reg2, int destreg) {
 		stringstream ret;
-		ret << "register[" << destreg << "] = register[" << reg1 << "] + register[" << reg2 << "];";
+		ret << "reg[" << destreg << "] = reg[" << reg1 << "] + reg[" << reg2 << "];";
 		return ret.str();
 	}
 	string add_value_register(int value, int reg, int destreg) {
 		stringstream ret;
-		ret << "register[" << destreg << "] = " << value << " + register[" << reg << "];";
+		ret << "reg[" << destreg << "] = " << value << " + reg[" << reg << "];";
 		return ret.str();
 	}
 	string add_register_value(int reg, int value, int destreg) {
 		stringstream ret;
-		ret << "register[" << destreg << "] = register[" << reg << "] + " << value << ";";
+		ret << "reg[" << destreg << "] = reg[" << reg << "] + " << value << ";";
 		return ret.str();
 	}
 	// Subtract
 	string subtract_register_register(int reg1, int reg2, int destreg) {
 		stringstream ret;
-		ret << "register[" << destreg << "] = register[" << reg1 << "] - register[" << reg2 << "];";
+		ret << "reg[" << destreg << "] = reg[" << reg1 << "] - reg[" << reg2 << "];";
 		return ret.str();
 	}
 	string subtract_value_register(int value, int reg, int destreg) {
 		stringstream ret;
-		ret << "register[" << destreg << "] = " << value << " - register[" << reg << "];";
+		ret << "reg[" << destreg << "] = " << value << " - reg[" << reg << "];";
 		return ret.str();
 	}
 	string subtract_register_value(int reg, int value, int destreg) {
 		stringstream ret;
-		ret << "register[" << destreg << "] = register[" << reg << "] - " << value << ";";
+		ret << "reg[" << destreg << "] = reg[" << reg << "] - " << value << ";";
 		return ret.str();
 	}
 	// XOR
 	string xor_register_register(int reg1, int reg2, int destreg) {
 		stringstream ret;
-		ret << "register[" << destreg << "] = register[" << reg1 << "] ^ register[" << reg2 << "];";
+		ret << "reg[" << destreg << "] = reg[" << reg1 << "] ^ reg[" << reg2 << "];";
 		return ret.str();
 	}
 	string xor_value_register(int value, int reg, int destreg) {
 		stringstream ret;
-		ret << "register[" << destreg << "] = " << value << " ^ register[" << reg << "];";
+		ret << "reg[" << destreg << "] = " << value << " ^ reg[" << reg << "];";
 		return ret.str();
 	}
 	string xor_register_value(int reg, int value, int destreg) {
 		stringstream ret;
-		ret << "register[" << destreg << "] = register[" << reg << "] ^ " << value << ";";
+		ret << "reg[" << destreg << "] = reg[" << reg << "] ^ " << value << ";";
 		return ret.str();
 	}
 	// Or
 	string or_register_register(int reg1, int reg2, int destreg) {
 		stringstream ret;
-		ret << "register[" << destreg << "] = register[" << reg1 << "] | register[" << reg2 << "];";
+		ret << "reg[" << destreg << "] = reg[" << reg1 << "] | reg[" << reg2 << "];";
 		return ret.str();
 	}
 	string or_value_register(int value, int reg, int destreg) {
 		stringstream ret;
-		ret << "register[" << destreg << "] = " << value << " | register[" << reg << "];";
+		ret << "reg[" << destreg << "] = " << value << " | reg[" << reg << "];";
 		return ret.str();
 	}
 	string or_register_value(int reg, int value, int destreg) {
 		stringstream ret;
-		ret << "register[" << destreg << "] = register[" << reg << "] | " << value << ";";
+		ret << "reg[" << destreg << "] = reg[" << reg << "] | " << value << ";";
 		return ret.str();
 	}
 	// And
 	string and_register_register(int reg1, int reg2, int destreg) {
 		stringstream ret;
-		ret << "register[" << destreg << "] = register[" << reg1 << "] & register[" << reg2 << "];";
+		ret << "reg[" << destreg << "] = reg[" << reg1 << "] & reg[" << reg2 << "];";
 		return ret.str();
 	}
 	string and_value_register(int value, int reg, int destreg) {
 		stringstream ret;
-		ret << "register[" << destreg << "] = " << value << " & register[" << reg << "];";
+		ret << "reg[" << destreg << "] = " << value << " & reg[" << reg << "];";
 		return ret.str();
 	}
 	string and_register_value(int reg, int value, int destreg) {
 		stringstream ret;
-		ret << "register[" << destreg << "] = register[" << reg << "] & " << value << ";";
+		ret << "reg[" << destreg << "] = reg[" << reg << "] & " << value << ";";
 		return ret.str();
 	}
 	// One Reg ALU
 	string not_register(int reg) {
 		stringstream ret;
-		ret << "register[" << reg << "] = ~register[" << reg << "];";
+		ret << "reg[" << reg << "] = ~reg[" << reg << "];";
 		return ret.str();
 	}
 	string rightshift_register(int reg) {
 		stringstream ret;
-		ret << "register[" << reg << "] = register[" << reg << "] << 1;";
+		ret << "reg[" << reg << "] = reg[" << reg << "] << 1;";
 		return ret.str();
 	}
 	string leftshift_register(int reg) {
 		stringstream ret;
-		ret << "register[" << reg << "] = register[" << reg << "] >> 1;";
+		ret << "reg[" << reg << "] = reg[" << reg << "] >> 1;";
 		return ret.str();
 	}
 };

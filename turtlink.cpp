@@ -140,9 +140,7 @@ int main(int, char* argv[]) {
 	rapidxml::xml_node<>* main = program->first_node("main");
 	if (main) mainloc = std::stoi(main->value());
 	std::string mainstr = arch->main(mainloc);
-	output << arch->prefix();
 	output << mainstr;
-	output << arch->postfix();
 
 	int instid = 0;
 	for (rapidxml::xml_node<>* instruction = program->first_node("instruction"); instruction; instruction = instruction->next_sibling("instruction") ) {
@@ -280,26 +278,26 @@ int main(int, char* argv[]) {
 				break;
 			// Control Flow
 			case JUMP:
-				if (s1t == REGISTER) arch->jump_register(s1);
-				if (s1t == VALUE) arch->jump_value(s1);
+				if (s1t == REGISTER) istr = arch->jump_register(s1);
+				if (s1t == VALUE) istr = arch->jump_value(s1);
 				break;
 			case CALL:
-				if (s1t == REGISTER) arch->call_register(s1);
-				if (s1t == VALUE) arch->call_value(s1);
+				if (s1t == REGISTER) istr = arch->call_register(s1);
+				if (s1t == VALUE) istr = arch->call_value(s1);
 				break;
 			case RETURN:
-				arch->call_return();
+				istr = arch->call_return();
 				break;
 		}
 		if (istr == "") {
-			std::cout << "Unsupported Instruction Or Instruction Combination In Arch: <instruction #" << instid << "> type='" << instruction->first_attribute("type")->value() << "'" << std::endl;
+			std::cout << "Unsupported Instruction Or Instruction Combination In Arch: <instruction #" << instid << "> type='" << instruction->first_attribute("type")->value() << "' Enum Types: s1=" << s1t << ", s2=" << s2t << ", dt=" << dt << std::endl;
 			std::exit(EXIT_FAILURE);
 		}
 		// Add Instruction
-		arch->instruction = instid;
 		output << arch->prefix();
 		output << istr;
 		output << arch->postfix();
+		arch->instruction++;
 	}
 
 	// Finalize Architecture

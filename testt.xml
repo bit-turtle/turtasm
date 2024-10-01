@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<program version="1.0" type="turtasm-object">
-	<instruction type="copy">
-		<source type="memory">0</source>
-		<destination type="register">0</destination>
-	</instruction>
-</program>
-
