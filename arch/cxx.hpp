@@ -64,7 +64,7 @@ int main() {
 	}
 	string main(int inst) {	// Jump to main function
 		stringstream ret;
-		ret << "goto i" << inst << ";";
+		ret << "\tgoto i" << inst << ";\n";
 		return ret.str();
 	}
 	// Control Flow

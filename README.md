@@ -19,9 +19,10 @@ Architectures in turtasm are classes that derive from the `Arch` class. To add a
 1. `example`
   * Supports No Instructions
   * Outputs `examplearch`
-2. `clang`
-  * Compiles to the C programming language
-  * Supports All Instructions
+2. `cxx`
+  * Compiles to the C++ programming language
+  * Supports Most Instructions (`>` (Call) and `<` (Return) are not supported)
   * Needs an additional layer of compiling
   * Works on all operating systems
-  * Port 0 is stdout
+  * Port 0 is Character I/O
+  * Port 1 is Number I/O

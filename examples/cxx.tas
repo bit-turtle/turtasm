@@ -16,4 +16,9 @@ s loop	# Print Loop
 	r2 -> p0
 	? !0 r2
 		>> $loop
+	# User Input
+	p1 -> r0
+	c= -> r1
+	r1 -> p0
+	r0 -> p1
 # End of program ("<" is not supported in CxxArch)
